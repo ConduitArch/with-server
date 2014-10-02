@@ -25,11 +25,12 @@ class StatsController < ApplicationController
     ambient_light = params[:ambient_light]
     activity = params[:activity]
     azimuth = params[:azimuth]
+    temperature = params[:temperature]
 
     user = User.where(phonenumber: to_phonenumber).order(created_at: :desc).first!
     if user
-      gcm = GCM.new('AIzaSyDLjHMmmEr--yPph2n-1irfDxawDXkS6uI')
-      options = { data: { latitude: latitude, longitude: longitude, ambient_light: ambient_light, activity: activity, azimuth: azimuth }}
+      gcm = GCM.new('AIzaSyDLjHMmmEr--yPph2n-1irfDxawDXkS6uI') # TODO: move key to config
+      options = { data: { latitude: latitude, longitude: longitude, ambient_light: ambient_light, activity: activity, azimuth: azimuth, temperature: temperature }}
       gcm.send([user.gcm_id], options)
       render nothing: true, status: :ok
     else
