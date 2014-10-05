@@ -11,13 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140924074419) do
+ActiveRecord::Schema.define(version: 20141005105208) do
 
   create_table "users", force: true do |t|
     t.string   "phonenumber"
     t.string   "gcm_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "selfie_file_name"
+    t.string   "selfie_content_type"
+    t.integer  "selfie_file_size"
+    t.datetime "selfie_updated_at"
+    t.integer  "paired_user_id"
   end
 
   add_index "users", ["gcm_id"], name: "index_users_on_gcm_id", unique: true

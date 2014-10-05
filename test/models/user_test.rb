@@ -2,16 +2,16 @@
 #
 # Table name: users
 #
-#  id          :integer          not null, primary key
-#  phonenumber :string(255)
-#  gcm_id      :string(255)
-#  created_at  :datetime
-#  updated_at  :datetime
-#
-# Indexes
-#
-#  index_users_on_gcm_id       (gcm_id) UNIQUE
-#  index_users_on_phonenumber  (phonenumber) UNIQUE
+#  id                  :integer          not null, primary key
+#  phonenumber         :string(255)
+#  gcm_id              :string(255)
+#  created_at          :datetime
+#  updated_at          :datetime
+#  selfie_file_name    :string(255)
+#  selfie_content_type :string(255)
+#  selfie_file_size    :integer
+#  selfie_updated_at   :datetime
+#  paired_user_id      :integer
 #
 
 require 'test_helper'
