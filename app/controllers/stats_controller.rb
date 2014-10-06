@@ -27,10 +27,10 @@ class StatsController < ApplicationController
 
     user1 = User.find_by_phonenumber(user_pn1)
     user2 = User.find_by_phonenumber(user_pn2)
-    user1.paired_user_id = user2.id
-    user2.paired_user_id = user1.id
-    user1.save!
-    user2.save!
+    user1.paired_user = user2
+    user2.paired_user = user1
+    user1.save
+    user2.save
 
     render nothing: true, status: :ok
   end
@@ -38,7 +38,6 @@ class StatsController < ApplicationController
   def send_stats
 
     phonenumber = params[:phonenumber]
-    to_phonenumber = params[:to_phonenumber]
     latitude = params[:latitude]
     longitude = params[:longitude]
     ambient_light = params[:ambient_light]
@@ -47,11 +46,10 @@ class StatsController < ApplicationController
     temperature = params[:temperature]
 
     user = User.find_by_phonenumber(phonenumber)
-    paired_user = User.find_by_phonenumber(to_phonenumber)
-    if user && paired_user
+    if user && user.paired_user
       gcm = get_gcm
-      options = { data: { selfie: user.selfie.url(:standard), latitude: latitude, longitude: longitude, ambient_light: ambient_light, activity: activity, azimuth: azimuth, temperature: temperature }}
-      gcm.send([paired_user.gcm_id], options)
+      options = { data: { selfie: user.selfie.url(:standard), selfie_filename: user.selfie_file_name, latitude: latitude, longitude: longitude, ambient_light: ambient_light, activity: activity, azimuth: azimuth, temperature: temperature }}
+      gcm.send([user.paired_user.gcm_id], options)
       render nothing: true, status: :ok
     else
       render nothing: true, status: :not_acceptable
@@ -61,15 +59,13 @@ class StatsController < ApplicationController
 
   def selfie_upload
     phonenumber = params[:phonenumber]
-    to_phonenumber = params[:to_phonenumber]
 
-    paired_user = User.find_by_phonenumber(to_phonenumber)
     user = User.find_by_phonenumber(phonenumber)
     user.selfie = params[:selfie]
     if user.save
       gcm = get_gcm
-      options = { data: { selfie: user.selfie.url(:standard) } }
-      gcm.send([paired_user.gcm_id], options)
+      options = { data: { selfie: user.selfie.url(:standard), selfie_filename: user.selfie_file_name } }
+      gcm.send([user.paired_user.gcm_id], options)
       render nothing: true, status: :ok
     else
       render nothing: true, status: :not_acceptable

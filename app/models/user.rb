@@ -17,7 +17,7 @@
 
 class User < ActiveRecord::Base
 
-  has_one :user, as: :paired_user
+  has_one :paired_user, foreign_key: :paired_user_id, class_name: 'User'
   attr_reader :selfie
 
   has_attached_file :selfie, {styles: { standard: "540x960>" }, url: '/system/:hash.:extension', hash_secret: 'boo' }
